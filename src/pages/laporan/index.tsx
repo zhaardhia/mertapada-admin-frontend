@@ -144,9 +144,9 @@ const Laporan = () => {
             {/* <button className="p-2 bg-[#3B71CA] rounded-lg text-white"
               onClick={() => createPDF(pdfContainerRef.current)}
             >Download PDF</button> */}
-            <Link className="p-2 bg-[#3B71CA] rounded-lg text-white"
+            {/* <Link className="p-2 bg-[#3B71CA] rounded-lg text-white"
               href={`/laporan/01`}
-            >Rincian</Link>
+            >Rincian</Link> */}
             <Link href={`/home`} className="p-2 bg-[#14A44D] rounded-lg text-white">Kembali</Link>
           </div>
         </div>

@@ -44,12 +44,12 @@ const ModalKaryawanGaji: React.FC<ModalConfirmAddItemChildType> = ({ setShowModa
               <div className="mt-5 flex flex-col gap-2">
                 <div className="flex flex-col gap-2">
                   <label>Nama</label>
-                  <input placeholder="Masukkan Nama" type="text" className="border border-[#bebebe] sm:w-[23rem] w-full py-2 px-2 rounded-md" onChange={(e) => setName(e.target.value)} value={name} />
+                  <input placeholder="Masukkan Nama" type="text" className="border border-[#bebebe] w-full py-2 px-2 rounded-md" onChange={(e) => setName(e.target.value)} value={name} />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label>Gaji</label>
                   <NumericFormat type="text" 
-                    className="border border-[#bebebe] sm:w-[23rem] w-full py-2 px-2 rounded-md" 
+                    className="border border-[#bebebe]  w-full py-2 px-2 rounded-md" 
                     thousandSeparator={true}
                     // prefix={'Rp'}
                     fixedDecimalScale={true}
