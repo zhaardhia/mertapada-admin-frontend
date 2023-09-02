@@ -12,6 +12,8 @@ import { formatRupiah, findCategoryShopExpense } from '@/utils/util';
 import moment from 'moment';
 import 'moment/locale/id';  // Import the Indonesian locale
 import { Icon } from '@iconify/react';
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 // import { itemShop } from '@/types/laporan';
 
 moment.locale('id');
@@ -139,6 +141,7 @@ const Category = () => {
   const handleAddOrUpdateItemApproved = async () => {
     console.log([...items, ...itemsAddition])
     try {
+      setLoading(true)
       const postItems = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/daily-report/item-shopped-by-category`, 
         {
           date: date,
@@ -148,7 +151,7 @@ const Category = () => {
           withCredentials: true,
           headers: {
             Authorization: `Bearer ${state?.token}`
-          }
+          } 
         }
       )
       setItemsOrigin(itemsOrigin)
@@ -158,8 +161,10 @@ const Category = () => {
       setItemAdditionUpdate(null)
       setIsUpdate(false)
       console.log({postItems})
+      setLoading(false)
     } catch (error) {
       console.error(error)
+      setLoading(false)
     }
   }
 
@@ -188,6 +193,7 @@ const Category = () => {
         </div>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white">{categoryShop}</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4 h-[32rem] overflow-y-scroll pr-5">
             {items?.map((item: itemShop) => {
               return (
@@ -200,7 +206,7 @@ const Category = () => {
                       // prefix={'Rp'}
                       fixedDecimalScale={true}
                       allowNegative={false}
-                      placeholder="Enter quantity"
+                      placeholder="Jumlah"
                       onValueChange={(values: any) => {
                         const { formattedValue, value } = values;
                         // formattedValue = "$1,234.56", value = "1234.56"
@@ -208,7 +214,7 @@ const Category = () => {
                         addOrUpdateItemQuantity(value, item, "main")
                       }}
                       className={`bg-[#FFF8D6] w-[25%] h-[2rem] rounded-xl p-2 text-center ${!isUpdate && "disabled:opacity-80"}`}
-                      value={item?.quantity}
+                      value={item?.quantity === 0 ? null : item?.quantity}
                       disabled={isUpdate ? false : true}
                     />
                     <input disabled type="text" className="bg-[#FFF8D6] w-[30%] h-[2rem] rounded-xl p-2 text-center disabled:opacity-80" value={item?.unit_type} />
@@ -223,7 +229,7 @@ const Category = () => {
                       // prefix={'Rp'}
                       fixedDecimalScale={true}
                       allowNegative={false}
-                      placeholder="Enter price"
+                      placeholder="Harga"
                       onValueChange={(values: any) => {
                         const { formattedValue, value } = values;
                         // formattedValue = "$1,234.56", value = "1234.56"
@@ -231,8 +237,8 @@ const Category = () => {
                         addOrUpdateItemPrice(value, item, "main")
                       }}
                       className={`bg-[#FFF8D6] w-[40%] h-[2rem] rounded-xl p-2 text-center ${(!item?.quantity || !isUpdate) && "disabled:opacity-80"}`}
-                      value={item?.price}
-                      disabled={item?.quantity && isUpdate ? false : true}
+                      value={item?.price === 0 ? null : item?.price}
+                      disabled={isUpdate ? false : true}
                     />
                   </div>
                   <hr />
@@ -255,7 +261,7 @@ const Category = () => {
                             // prefix={'Rp'}
                             fixedDecimalScale={true}
                             allowNegative={false}
-                            placeholder="Enter quantity"
+                            placeholder="Masukkan Jumlah"
                             className={`bg-[#FFF8D6] w-[25%] h-[2rem] rounded-xl p-2 text-center disabled:opacity-75`}
                             value={itemAddition.quantity}
                             disabled={true}
@@ -266,7 +272,7 @@ const Category = () => {
                             // prefix={'Rp'}
                             fixedDecimalScale={true}
                             allowNegative={false}
-                            placeholder="Enter price"
+                            placeholder="Masukkan Harga"
                             className={`bg-[#FFF8D6] w-[40%] h-[2rem] rounded-xl p-2 text-center disabled:opacity-75`}
                             value={itemAddition.price}
                             disabled={true}
@@ -333,7 +339,7 @@ const Category = () => {
               </>
             )}
 
-            {showModalDeleteItem ? <ModalDeleteAdditionalItem setShowModalDelete={setShowModalDeleteItem} item={itemAdditionDelete} setItemAdditionDelete={setItemAdditionDelete} setItemsAddition={setItemsAddition} itemsAddition={itemsAddition} /> : null}
+            {showModalDeleteItem ? <ModalDeleteAdditionalItem setShowModalDelete={setShowModalDeleteItem} item={itemAdditionDelete} setItemAdditionDelete={setItemAdditionDelete} setItemsAddition={setItemsAddition} itemsAddition={itemsAddition} date={date}  /> : null}
 
             {showModalAddItem ? <ModalAddAdditionalItem setShowModal={setShowModalAddItem} onApproved={handleAdditionalItem} categoryId={categoryId} date={date} itemAdditionUpdate={itemAdditionUpdate} /> : null}
             {showModal ? <ModalConfirmAddItem setShowModal={setShowModal} onApproved={handleAddOrUpdateItemApproved} /> : null}
@@ -345,4 +351,6 @@ const Category = () => {
   )
 }
 
-export default Category
+export default dynamic(() => Promise.resolve(Category), {
+  ssr: false,
+})

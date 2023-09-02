@@ -57,11 +57,11 @@ const FinalRecapDetailTable: FC<RecapDetailPriceShop> = ({
       price: formatRupiah(shop_expense)
     },
     {
-      name: "Total Hari Ini",
+      name: "Saldo Hari Ini",
       price: formatRupiah(nett_profit)
     },
     {
-      name: "Total Sebelumnya",
+      name: "Saldo Sebelumnya",
       price: formatRupiah(prevbalance)
     },
     {

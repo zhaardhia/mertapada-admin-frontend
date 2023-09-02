@@ -11,7 +11,8 @@ import moment from 'moment';
 import 'moment/locale/id';  // Import the Indonesian locale
 import ModalVerifItemShop from '@/components/modals/ModalVerifItemShop';
 import { Icon } from '@iconify/react';
-
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 interface CheckCategoryType {
   name: string;
   filled: boolean;
@@ -102,6 +103,7 @@ const Date = () => {
         </div>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white text-center">Pilih Kategori Data</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4">
             {checkCategory.map((category: CheckCategoryType) => {
               return (
@@ -109,7 +111,7 @@ const Date = () => {
                   console.log({category})
                   dispatchLaporan({ type: "setCurrentCategory", payload: category})
                 }} 
-                className={`p-2 bg-transparent border border-${category?.filled ? "[#87E490]" : "white"} rounded-lg text-white sm:text-base text-sm flex justify-between`}>
+                className={`p-2 bg-transparent border border-${category?.filled ? "[#87E490]" : "white"} rounded-lg text-white sm:text-base text-sm flex justify-between hover:bg-[#566d4b]`}>
                   <p>{category?.name}</p>
                   {category?.filled ? <p className="text-[#87E490]">Sudah Terisi ✅</p> : <p className="">Belum Terisi</p>}
                 </Link>
@@ -133,6 +135,8 @@ const Date = () => {
                 <button className="p-2 bg-[#14A44D] rounded-lg text-white opacity-60" disabled>Selanjutnya</button>
               )
             }
+            {/* <Link href={`/input-harian/${date}/final-category`} className="p-2 bg-[#14A44D] rounded-lg text-white">Selanjutnya</Link> */}
+            {/* <Link href={`/input-harian/${date}/final-category`} className="p-2 bg-[#14A44D] rounded-lg text-white">Selanjutnya</Link> */}
           </div>
           {showModalVerif && (
             <ModalVerifItemShop onApproved={handleApproved}  setShowModal={setShowModalVerif} />
@@ -143,4 +147,6 @@ const Date = () => {
   )
 }
 
-export default Date
+export default dynamic(() => Promise.resolve(Date), {
+  ssr: false,
+})

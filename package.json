@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -17,8 +17,6 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "framer-motion": "^10.13.0",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
     "nanoid": "^4.0.2",
@@ -31,6 +29,7 @@
     "react-number-format": "^5.2.2",
     "react-select": "^5.7.2",
     "react-spinners": "^0.13.8",
+    "styled-components": "^6.0.7",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
   }

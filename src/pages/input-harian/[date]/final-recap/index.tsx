@@ -6,6 +6,8 @@ import { useDataLaporan } from '../../../../contexts/DataLaporanContext'
 import { useSessionUser } from '../../../../contexts/SessionUserContext'
 import { formatRupiah } from '@/utils/util';
 import moment from 'moment';
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 
 interface FinalRecapType {
   id: string;
@@ -62,6 +64,7 @@ const FinalRecap = () => {
       <div className="flex flex-col gap-10 mt-10">
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white text-center">Rekap Akhir Data {date} {thisMonth}</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4">
             <div className="flex flex-col">
               <div className="flex justify-between mt-4 mb-4">
@@ -93,7 +96,7 @@ const FinalRecap = () => {
             </div>
             <div className="flex flex-col">
               <div className="flex justify-between mt-4 mb-4">
-                <p className="text-white">Total Pendapatan</p>
+                <p className="text-white">Total Saldo</p>
                 <p className="text-white font-semibold">{formatRupiah(finalRecap?.currentbalance)}</p>
               </div>
               <hr />
@@ -112,4 +115,6 @@ const FinalRecap = () => {
   )
 }
 
-export default FinalRecap
+export default dynamic(() => Promise.resolve(FinalRecap), {
+  ssr: false,
+})

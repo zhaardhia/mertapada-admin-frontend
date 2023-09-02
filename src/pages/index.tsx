@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google'
 import bg from '../../public/bg-monda.png'
 import LayoutLogin from '@/components/LayoutLogin'
 import { useSessionUser } from '../contexts/SessionUserContext'
@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { animateVibrate } from "../animations/animation";
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const { refreshToken, state } = useSessionUser()

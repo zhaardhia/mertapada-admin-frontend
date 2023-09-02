@@ -6,6 +6,8 @@ import { useSessionUser } from '../../../../contexts/SessionUserContext'
 import ModalConfirmFinal from '@/components/modals/ModalConfirmFinal';
 import { Alert } from '@/components/Alert';
 import moment from 'moment';
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 
 interface FinalCategoryStatusType {
   daily_report_id: string;
@@ -68,6 +70,7 @@ const FinalCategory = () => {
   const handleApproved = async () => {
     let verifFinal = null;
     try {
+      setLoading(true)
       verifFinal = await axiosJWT.put(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/daily-report/verify-final`, 
         {
           id: omsetAndAbsence?.daily_report_id,
@@ -93,6 +96,7 @@ const FinalCategory = () => {
       });
       setSure(undefined)
       // return verifDailyReport?.message
+      setLoading(false)
     } catch (error) {
       console.error(error)
       // return verifDailyReport?.message || "Gagal saat melakukan verifikasi" 
@@ -100,10 +104,11 @@ const FinalCategory = () => {
       setAlertState({
         isShow: true,
         type: "error",
-        message: verifFinal?.message || "Gagal saat mengubah data absen" ,
+        message: verifFinal?.message || "Gagal saat verifikasi akhir" ,
       });
       setShowModalVerif(false)
       setSure(undefined)
+      setLoading(false)
     }
   }
   console.log({omsetAndAbsence}, {isAllowedNext, isVerified})
@@ -113,6 +118,7 @@ const FinalCategory = () => {
         <p className='text-2xl text-center mx-auto'>Data Omset & Absen ({date} {thisMonth})</p>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5 h-[30rem]">
           <p className="text-2xl text-white text-center">Pilih Kategori Data</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col">
             <div className="flex flex-col gap-4">
               <Link href={`/input-harian/${date}/final-category/omset/${omsetAndAbsence?.daily_report_id}`} onClick={() => {
@@ -167,4 +173,6 @@ const FinalCategory = () => {
   )
 }
 
-export default FinalCategory
+export default dynamic(() => Promise.resolve(FinalCategory), {
+  ssr: false,
+})

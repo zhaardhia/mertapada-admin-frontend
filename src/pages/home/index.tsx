@@ -5,6 +5,7 @@ import { useSessionUser } from '../../contexts/SessionUserContext'
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Icon } from '@iconify/react';
+import dynamic from 'next/dynamic';
 
 const index: FC = () => {
   const { state, axiosJWT, refreshToken, dispatch } = useSessionUser()
@@ -71,4 +72,6 @@ const index: FC = () => {
   )
 }
 
-export default index
+export default dynamic(() => Promise.resolve(index), {
+  ssr: false,
+})

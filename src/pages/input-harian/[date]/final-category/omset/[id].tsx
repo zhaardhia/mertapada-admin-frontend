@@ -7,6 +7,8 @@ import Link from 'next/link';
 import ModalConfirm from '@/components/modals/ModalConfirm';
 import { Alert } from '@/components/Alert';
 import moment from 'moment';
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 
 interface OmsetType {
   id: string;
@@ -68,6 +70,7 @@ const Omset = () => {
   const handleApproved = async () => {
     let verifDailyReport = null;
     try {
+      setLoading(true)
       verifDailyReport = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/daily-report/omset`, 
         {
           id,
@@ -88,6 +91,7 @@ const Omset = () => {
         type: "success",
         message: verifDailyReport.data.message,
       });
+      setLoading(false)
     } catch (error) {
       console.error(error)
       setAlertState({
@@ -96,6 +100,7 @@ const Omset = () => {
         message: verifDailyReport?.message || "Gagal saat mengubah data absen" ,
       });
     }
+    setLoading(false)
     setIsUpdate(false)
     setShowModal(false)
   }
@@ -111,6 +116,8 @@ const Omset = () => {
         <p className='text-2xl text-center mx-auto'>Silahkan Input Data Hari Ini ({date} {thisMonth})</p>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white">Omset</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
+
           <div className="flex flex-col gap-4 h-[18rem]">
             <div className="flex flex-col">
               <p className="text-white">Omset</p>
@@ -193,4 +200,6 @@ const Omset = () => {
   )
 }
 
-export default Omset
+export default dynamic(() => Promise.resolve(Omset), {
+  ssr: false,
+})

@@ -10,6 +10,7 @@ import ModalConfirm from '@/components/modals/ModalConfirm';
 import ModalConfirmDelete from '@/components/modals/ModalConfirmDelete';
 import { NumericFormat } from 'react-number-format';
 import { Alert } from '@/components/Alert';
+import { BounceLoader } from 'react-spinners';
 
 const Karyawan: FC = () => {
   const router = useRouter();
@@ -57,6 +58,7 @@ const Karyawan: FC = () => {
   const handleAddKaryawan = async (karyawan: EmployeeType) => {
     let addKaryawan = null;
     try {
+      setLoading(true)
       addKaryawan = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/employee`, 
         {
           employeeItems: [karyawan]
@@ -74,12 +76,14 @@ const Karyawan: FC = () => {
     } catch (error) {
       console.error(error)
     }
+    setLoading(false)
     return addKaryawan?.message || "Gagal saat melakukan verifikasi"
   }
 
   const handleUpdateKaryawan = async () => {
     let updateKaryawan = null;
     try {
+      setLoading(true)
       updateKaryawan = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/employee`, 
         {
           employeeItems: employees
@@ -109,6 +113,7 @@ const Karyawan: FC = () => {
     }
     setIsUpdate(false)
     setShowModalConfirm(false)
+    setLoading(false)
   }
 
   const updateEmployeeSalary = (value: any, obj: EmployeeType) => {
@@ -127,6 +132,7 @@ const Karyawan: FC = () => {
   const handleDeleteKaryawan = async () => {
     let updateKaryawan = null;
     try {
+      setLoading(true)
       updateKaryawan = await axiosJWT.put(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/employee`, 
         {
           id: selectedDelete?.id
@@ -148,6 +154,7 @@ const Karyawan: FC = () => {
     }
     setIsUpdate(false)
     setSelectedDelete(undefined)
+    setLoading(false)
     return updateKaryawan?.message || "Gagal saat melakukan verifikasi"
   }
   console.log({showModalConfirm})
@@ -156,7 +163,8 @@ const Karyawan: FC = () => {
       <div className="flex flex-col gap-10 mt-10">
         <p className='text-2xl text-center mx-auto'>Pengaturan Gaji Karyawan untuk Bulan Ini (Juli 2023)</p>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
-          <p className="text-2xl text-white">Karyawan & Gaji</p>
+          <p className="text-2xl text-white">Karyawan & Gaji (Perbulan)</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4 h-[18rem] overflow-y-scroll">
             {employees?.map((employee) => {
               return (

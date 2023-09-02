@@ -56,27 +56,27 @@ const FinalRecapDetailTable: FC<FinalRecapDetailTableType> = ({ laukPauk, bumbuS
   const data: MyData[] = useMemo(() => [
     ...laukPauk,
     {
-      name: "========",
-      category: "========",
-      quantity: "========",
-      unit_type: "========",
-      price: "========"
+      name: "--------",
+      category: "--------",
+      quantity: "--------",
+      unit_type: "--------",
+      price: "--------"
     },
     ...bumbuSayuran,
     {
-      name: "========",
-      category: "========",
-      quantity: "========",
-      unit_type: "========",
-      price: "========"
+      name: "--------",
+      category: "--------",
+      quantity: "--------",
+      unit_type: "--------",
+      price: "--------"
     },
     ...sembakoMinuman,
     {
-      name: "========",
-      category: "========",
-      quantity: "========",
-      unit_type: "========",
-      price: "========"
+      name: "--------",
+      category: "--------",
+      quantity: "--------",
+      unit_type: "--------",
+      price: "--------"
     },
     ...lainLain
   ], []) 

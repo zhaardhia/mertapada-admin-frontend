@@ -7,7 +7,8 @@ import { useSessionUser } from '@/contexts/SessionUserContext';
 import ModalConfirm from '@/components/modals/ModalConfirm';
 import { Alert } from '@/components/Alert';
 import moment from 'moment';
-
+import { BounceLoader } from 'react-spinners';
+import dynamic from 'next/dynamic';
 interface AbsenceType {
   id: string;
   name: string;
@@ -76,6 +77,7 @@ const Absen = () => {
   const handleApproved = async () => {
     let verifDailyReport = null;
     try {
+      setLoading(true)
       const filterIsPresent = absence.filter((absen: AbsenceType) => absen.is_present === true)
       console.log("AKWK")
       verifDailyReport = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/daily-report/absence`, 
@@ -113,6 +115,7 @@ const Absen = () => {
       setIsUpdate(false)
       setShowModal(false)
     }
+    setLoading(false)
   }
 
   const handleCancelEdit = () => {
@@ -126,6 +129,7 @@ const Absen = () => {
         <p className='text-2xl text-center mx-auto'>Silahkan Input Data Hari Ini ({date} {thisMonth})</p>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white">Absen</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4 h-[18rem] overflow-y-scroll">
             {absence?.map((absen: AbsenceType) => {
               return (
@@ -183,4 +187,6 @@ const Absen = () => {
   )
 }
 
-export default Absen
+export default dynamic(() => Promise.resolve(Absen), {
+  ssr: false,
+})

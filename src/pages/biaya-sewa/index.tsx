@@ -12,6 +12,7 @@ import ModalConfirm from '@/components/modals/ModalConfirm';
 import ModalConfirmDelete from '@/components/modals/ModalConfirmDelete';
 import { NumericFormat } from 'react-number-format';
 import { Alert } from '@/components/Alert';
+import { BounceLoader } from 'react-spinners';
 
 const BiayaSewa = () => {
   const router = useRouter();
@@ -82,6 +83,7 @@ const BiayaSewa = () => {
   const handleUpdateBiayaSewa = async () => {
     let updateKaryawan = null;
     try {
+      setLoading(true)
       updateKaryawan = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/biaya-sewa`, 
         {
           biayaSewaItems: biayaSewa
@@ -111,6 +113,7 @@ const BiayaSewa = () => {
     }
     setIsUpdate(false)
     setShowModalConfirm(false)
+    setLoading(false)
   }
 
   const updatePriceBiayaSewa = (value: any, obj: BiayaSewaType) => {
@@ -159,7 +162,8 @@ const BiayaSewa = () => {
       <div className="flex flex-col gap-10 mt-10">
         <p className='text-2xl text-center mx-auto'>Pengaturan Biaya Sewa untuk Bulan Ini (Juli 2023)</p>
         <div className="bg-[#617A55] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
-          <p className="text-2xl text-white">Biaya Sewa</p>
+          <p className="text-2xl text-white">Biaya Sewa (Perbulan)</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex flex-col gap-4 h-[18rem] overflow-y-scroll">
             {biayaSewa?.map((sewa) => {
               return (

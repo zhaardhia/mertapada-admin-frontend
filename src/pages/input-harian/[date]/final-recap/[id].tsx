@@ -9,6 +9,7 @@ import { RecapDetailCategoryShop } from '@/types/laporan';
 import FinalRecapDetailTable from '@/components/excel/FinalRecapDetailTable';
 import dynamic from 'next/dynamic';
 import moment from 'moment';
+import { BounceLoader } from 'react-spinners';
 const DynamicFinalDetailDataTable = dynamic(() => import('@/components/excel/FinalRecapDetailTable'), { ssr: false });
 const DynamicFinalPriceDataTable = dynamic(() => import('@/components/excel/FinalRecapTotalPrice'), { ssr: false });
 
@@ -76,6 +77,7 @@ const FinalRecapDetail = () => {
         {/* <p className='text-2xl text-start mx-auto'>Silahkan Input Data Hari Ini ({date} {thisMonth})</p> */}
         <div className="bg-[#85a476] rounded-2xl sm:w-[80%] w-full p-5 mx-auto flex flex-col gap-5">
           <p className="text-2xl text-white text-center">Rekap Akhir Data ({date} {thisMonth})</p>
+          <BounceLoader className="mx-auto" loading={loading} color="#e5f3f0" />
           <div className="flex justify-around">
             <button className={`p-2 bg-transparent border rounded-lg text-white ${tabSwitch === "dataBelanja" && "border-slate-400"}`}
               onClick={() => setTabSwitch('dataBelanja')}
@@ -103,7 +105,7 @@ const FinalRecapDetail = () => {
             )}
           </div>
           <div className="text-white flex justify-end mt-10">
-            <Link href={`/input-harian/${date}/final-category`} className="p-2 bg-transparent border border-white rounded-lg text-white">Kembali</Link>
+            <Link href={`/input-harian/${date}/final-recap`} className="p-2 bg-transparent border border-white rounded-lg text-white">Kembali</Link>
           </div>
         </div>
       </div>
@@ -111,4 +113,6 @@ const FinalRecapDetail = () => {
   )
 }
 
-export default FinalRecapDetail
+export default dynamic(() => Promise.resolve(FinalRecapDetail), {
+  ssr: false,
+})

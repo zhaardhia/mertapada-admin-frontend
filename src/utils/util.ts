@@ -1,5 +1,3 @@
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 
 export const objCategory = [
   {
@@ -60,15 +58,15 @@ export function findCategoryShopExpense(categoryName: string | undefined) {
   else return "check the system."
 }
 
-export const createPDF = async (pdfContainerRef: HTMLDivElement) => {   
-  const pdf = new jsPDF("portrait", "pt", "a4"); 
-  const data = await html2canvas(pdfContainerRef);
-  const img = data.toDataURL("image/png");  
-  // const imgProperties = pdf.getImageProperties(img);
-  // const pdfWidth = pdf.internal.pageSize.getWidth();
-  // const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-  // pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
-  // pdf.save("shipping_label.pdf");
-      pdf.addImage(img, 'PNG', 10, 10, 290, 680);
-      pdf.save('exported-document.pdf');
-};
+// export const createPDF = async (pdfContainerRef: HTMLDivElement) => {   
+//   const pdf = new jsPDF("portrait", "pt", "a4"); 
+//   const data = await html2canvas(pdfContainerRef);
+//   const img = data.toDataURL("image/png");  
+//   // const imgProperties = pdf.getImageProperties(img);
+//   // const pdfWidth = pdf.internal.pageSize.getWidth();
+//   // const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+//   // pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+//   // pdf.save("shipping_label.pdf");
+//       pdf.addImage(img, 'PNG', 10, 10, 290, 680);
+//       pdf.save('exported-document.pdf');
+// };
