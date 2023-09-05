@@ -11,11 +11,12 @@ interface DateMonthTypes {
   status: string;
   date: string;
 }
+const july = "2023-09"
 const InputHarian: FC = () => {
   const tanggal: Array<string> = ["01", "02" , "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]; // example day of month
   const { state, axiosJWT, refreshToken, dispatch } = useSessionUser()
   const thisMonth = moment().format("MMMM YYYY")
-  const thisMonthAndYear = moment("2023-07").format("YYYY-MM")  // GANTI INI PAS LIVE
+  const thisMonthAndYear = moment(july).format("YYYY-MM")  // GANTI INI PAS LIVE
 
   const [allDates, setAllDates] = useState<DateMonthTypes[]>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -70,7 +71,7 @@ const InputHarian: FC = () => {
             <div className="grid sm:grid-cols-5 grid-cols-4 sm:gap-4 gap-2">
               {allDates?.map((tgl: DateMonthTypes, idx) => {
                   return (
-                    allDates[idx - 1]?.status === "verified" || tgl?.status === "verified" || moment(`2023-07-${tgl.date}`).format("DD") === "01" ?
+                    allDates[idx - 1]?.status === "verified" || tgl?.status === "verified" || moment(`${july}-${tgl.date}`).format("DD") === "01" ?
                     <Link href={`input-harian/${tgl.date}`} 
                       className={`sm:p-2 p-1 
                         ${buttonDayColor(tgl, idx)}  
