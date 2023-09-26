@@ -7,7 +7,9 @@ import moment from 'moment';
 import { formatRupiah } from '@/utils/util';
 import { BounceLoader } from 'react-spinners';
 import 'moment/locale/id';  // Import the Indonesian locale
-
+import ModalAdditionalExpense from '@/components/modals/ModalAdditionalExpense';
+import { Alert } from '@/components/Alert';
+import { Icon } from '@iconify/react';
 type ExpenseType = {
   shopExpense: number;
   laukPauk: number;
@@ -65,6 +67,8 @@ type AdditionExpenseItemType = {
   name: string;
   nominal: number;
 }
+type Option = { value: string; label: string };
+
 moment.locale('id')
 const Laporan = () => {
   const router = useRouter();
@@ -75,6 +79,19 @@ const Laporan = () => {
   const category: Array<string> = ["Lauk - pauk", "Bumbu - bumbuan", "Sembako - Minuman", "Lain - Lain"]
   const [loading, setLoading] = useState<boolean>(false)
   const [data, setData] = useState<BagiHasilType>()
+  const [selectedMonth, setSelectedMonth] = useState<Option | null>({label: moment().format("MMMM YYYY"), value: moment().format("YYYY-MM")})
+
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [idExpense, setIdExpense] = useState<string | undefined>()
+  const [isUpdateExpense, setIsUpdateExpense] = useState<boolean>(false)
+  const [name, setName] = useState<string | undefined>()
+  const [price, setPrice] = useState<number | undefined>()
+  const [alertState, setAlertState] = useState({
+    isShow: false,
+    type: "success",
+    message: "",
+  });
+
 
   useEffect(() => {
     fetchBagiHasil()
@@ -101,6 +118,71 @@ const Laporan = () => {
     }
   }
   console.log({data})
+
+  const handleApproved = async () => {
+    if (!name) return setAlertState({
+      isShow: true,
+      type: "error",
+      message: "Nama pengeluaran wajib diisi",
+    })
+    if (!price) return setAlertState({
+      isShow: true,
+      type: "error",
+      message: "Jumlah pengeluaran wajib diisi",
+    })
+    let addExpense = null
+    if (isUpdateExpense) {
+      if (!idExpense) return setAlertState({
+        isShow: true,
+        type: "error",
+        message: "ID pengeluaran tidak ditemukan",
+      })
+
+      addExpense = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/bulanan-tambahan`, 
+        {
+          id: idExpense,
+          name: name,
+          fee: price,
+          selected_month: selectedMonth?.value
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${state?.token}`
+          }
+        }
+      )
+    } else {
+      addExpense = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/bulanan-tambahan`, 
+        {
+          name: name,
+          fee: price,
+          selected_month: selectedMonth?.value
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${state?.token}`
+          }
+        }
+      )
+    }
+
+    setAlertState({
+      isShow: true,
+      type: "success",
+      message: "Berhasil menambahkan data pengeluaran tambahan",
+    })
+    setName(undefined)
+    setPrice(undefined)
+    setIdExpense(undefined)
+    setShowModal(false)
+    setIsUpdateExpense(false)
+    setTimeout(async () => {
+      await fetchBagiHasil()
+    }, 3000)
+  }
+
   return (
     <Layout>
       <div className="flex flex-col gap-10 mt-10" >
@@ -288,6 +370,15 @@ const Laporan = () => {
                           <p>{addItem?.name}:</p>
                           <div className="flex gap-3 items-center">
                             <p>{formatRupiah(addItem?.nominal)}</p>
+                            <button onClick={() => {
+                              setIdExpense(addItem.id)
+                              setIsUpdateExpense(true)
+                              setName(addItem.name)
+                              setPrice(addItem.nominal)
+                              setShowModal(true)
+                            }}>
+                              <Icon icon="gala:settings" width={30} />
+                            </button>
                           </div>
                         </div>
                         <hr className="my-2" />
@@ -359,10 +450,40 @@ const Laporan = () => {
               </div>
             </div>
           </div>
+          {data?.endDate && (
+            <button className="p-2 bg-[#3B71CA] hover:bg-[#4177cf] rounded-lg text-white -mt-5 shadow-md"
+              onClick={() => setShowModal(!showModal)}
+            >Tambah Pengeluaran Akhir Bulan</button>
+          )}
           <div className="text-white flex justify-end gap-2 w-[70%] ml-[30%]">
             <Link href={`/home`} className="p-2 bg-[#14A44D] rounded-lg text-white">Kembali</Link>
           </div>
         </div>
+        {showModal && 
+          <ModalAdditionalExpense 
+            setShowModal={setShowModal} 
+            onApproved={handleApproved} 
+            setName={setName} 
+            name={name} 
+            setPrice={setPrice}
+            price={price}
+            monthYear={selectedMonth?.value}
+          />
+        }
+        {alertState.isShow && (
+          <Alert
+            showAlert={alertState.isShow}
+            hideAlert={() =>
+              setAlertState({
+                isShow: false,
+                type: "success",
+                message: "",
+              })
+            }
+            message={alertState.message}
+            type={alertState.type}
+          />
+        )}
       </div>
     </Layout>
   )

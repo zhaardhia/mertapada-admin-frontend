@@ -29,7 +29,6 @@ const FinalCategory = () => {
   const [isAllowedNext, setIsAllowedNext] = useState<boolean>(false)
   const [isVerified, setIsVerified] = useState<boolean>(false)
   const [showModalVerif, setShowModalVerif] = useState<boolean>(false)
-  const [sure, setSure] = useState<string>()
   const [alertState, setAlertState] = useState({
     isShow: false,
     type: "success",
@@ -74,8 +73,7 @@ const FinalCategory = () => {
       verifFinal = await axiosJWT.put(`${process.env.NEXT_PUBLIC_BASE_URL}/v1/daily-report/verify-final`, 
         {
           id: omsetAndAbsence?.daily_report_id,
-          date,
-          sure
+          date
         },
         {
           withCredentials: true,
@@ -94,7 +92,6 @@ const FinalCategory = () => {
         type: "success",
         message: verifFinal.data.message,
       });
-      setSure(undefined)
       // return verifDailyReport?.message
       setLoading(false)
     } catch (error) {
@@ -107,7 +104,6 @@ const FinalCategory = () => {
         message: verifFinal?.message || "Gagal saat verifikasi akhir" ,
       });
       setShowModalVerif(false)
-      setSure(undefined)
       setLoading(false)
     }
   }
@@ -153,7 +149,7 @@ const FinalCategory = () => {
         </div>
       </div>
       {showModalVerif && (
-        <ModalConfirmFinal onApproved={handleApproved}  setShowModal={setShowModalVerif} header='Verifikasi Final' headerTitle='verifikasi final' setSure={setSure} />
+        <ModalConfirmFinal onApproved={handleApproved}  setShowModal={setShowModalVerif} header='Verifikasi Final' headerTitle='verifikasi final' />
       )}
       {alertState.isShow && (
         <Alert
