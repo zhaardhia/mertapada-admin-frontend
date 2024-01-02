@@ -13,7 +13,7 @@ import { Icon } from '@iconify/react';
 type ExpenseType = {
   shopExpense: number;
   laukPauk: number;
-  bumbuSayuran: number;
+  bumbuSayuran: number; 
   sembakoMinuman: number;
   lainLain: number;
 }
